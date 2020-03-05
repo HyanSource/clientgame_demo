@@ -3,34 +3,15 @@ package main
 import (
 	"fmt"
 
-	"github.com/aceld/zinx/ziface"
-	"github.com/aceld/zinx/znet"
+	"github.com/hyansource/20200212gameclient/data"
 )
-
-func OnConnectionAdd(conn ziface.IConnection) {
-
-	fmt.Println("client succees")
-}
-
-func OnConnectionLost(conn ziface.IConnection) {
-
-	fmt.Println("client lost")
-}
 
 func main() {
 
-	//創建服務器句柄
-	ser := znet.NewServer()
+	client := data.NewTcpClient("127.0.0.1", 7777)
+	client.Start()
 
-	//註冊客戶端連接和丟失函數
-	ser.SetOnConnStart(OnConnectionAdd)
-	ser.SetOnConnStop(OnConnectionLost)
+	fmt.Println("server succees")
 
-	//註冊路由
-	//ser.AddRouter(2)
-	//ser.AddRouter(3)
-
-	s.Serve()
-
-	fmt.Println("")
+	select {}
 }

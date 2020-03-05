@@ -1,0 +1,11 @@
+syntax = "proto3"; //
+package pb;
+
+//用protoc編譯 (cmd)
+//protoc --go_out=. *.proto
+
+//定義message格式
+message Data01 {
+    string Name = 1;
+    int32 Money = 2;
+}
