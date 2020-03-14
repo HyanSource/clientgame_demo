@@ -42,7 +42,7 @@ func (t *TcpClient) Start() {
 	//下注業務
 	go func() {
 		for {
-			time.Sleep(5 * time.Second)
+			time.Sleep(1 * time.Second)
 
 			//下注
 			p := &pb.Bet{
@@ -164,20 +164,21 @@ func (t *TcpClient) DoMsg(msg *Message) {
 			tempdata := &pb.PlayerData{}
 			proto.Unmarshal(msg.Data, tempdata)
 			t.id = tempdata.PlayerID
+			//fmt.Println("id:", tempdata.PlayerID, " name:", tempdata.PlayerName, " money:", tempdata.PlayerMoney)
 		}
 		break
 	case 100: //下注業務
 		{
 			tempdata := &pb.ReturnGameResult{}
 			proto.Unmarshal(msg.Data, tempdata)
-			fmt.Println(tempdata)
+			//fmt.Println(tempdata)
 		}
 		break
 	case 150: //廣播業務
 		{
 			tempdata := &pb.BroadCast{}
 			proto.Unmarshal(msg.Data, tempdata)
-			fmt.Println(tempdata.TalkMsg.Content)
+			//fmt.Println(tempdata.TalkMsg.Content)
 		}
 		break
 	case 200:
