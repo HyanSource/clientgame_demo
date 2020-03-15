@@ -20,8 +20,9 @@ type Message struct {
 
 //玩家的socket
 type TcpClient struct {
-	conn net.Conn
-	id   int32
+	conn net.Conn  //socket連線
+	id   int32     //玩家id
+	over chan bool //關閉用chan
 }
 
 //建構子
@@ -34,6 +35,7 @@ func NewTcpClient(ip string, port int) *TcpClient {
 
 	client := &TcpClient{
 		conn: conn,
+		over: make(chan bool, 1),
 	}
 	return client
 }
@@ -44,21 +46,34 @@ func (t *TcpClient) Start() {
 		for {
 			time.Sleep(1 * time.Second)
 
-			//下注
-			p := &pb.Bet{
-				PlayerID: t.id,
-				Bet:      50,
+			select {
+			case <-t.over:
+				{
+					fmt.Println("離線 playerID:", t.id)
+					return
+				}
+			default:
+				{
+
+					//下注
+					p := &pb.Bet{
+						PlayerID: t.id,
+						Bet:      5,
+					}
+
+					t.SendMsg(100, p)
+
+					// //廣播
+					// talk := &pb.BroadCast{
+					// 	PlayerID: t.id,
+					// 	TalkMsg:  &pb.TalkMsg{Content: "你好"},
+					// }
+
+					// t.SendMsg(150, talk)
+				}
+				break
 			}
 
-			t.SendMsg(100, p)
-
-			// //廣播
-			// talk := &pb.BroadCast{
-			// 	PlayerID: t.id,
-			// 	TalkMsg:  &pb.TalkMsg{Content: "你好"},
-			// }
-
-			// t.SendMsg(150, talk)
 		}
 	}()
 
@@ -171,7 +186,13 @@ func (t *TcpClient) DoMsg(msg *Message) {
 		{
 			tempdata := &pb.ReturnGameResult{}
 			proto.Unmarshal(msg.Data, tempdata)
-			//fmt.Println(tempdata)
+			fmt.Println(tempdata)
+
+			//到一定的條件之後離線
+			if tempdata.AllMoney < 1000 {
+				t.over <- true
+				t.conn.Close()
+			}
 		}
 		break
 	case 150: //廣播業務
