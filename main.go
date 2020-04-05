@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/hyansource/20200212gameclient/data"
+	"github.com/hyansource/clientgame_demo/data"
 )
 
 func main() {

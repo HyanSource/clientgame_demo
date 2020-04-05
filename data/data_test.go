@@ -8,7 +8,7 @@ import (
 
 	"github.com/golang/protobuf/proto"
 
-	"github.com/hyansource/20200212gameclient/pb"
+	"github.com/hyansource/clientgame_demo/pb"
 )
 
 func TestA(t *testing.T) {
